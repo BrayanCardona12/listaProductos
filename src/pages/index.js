@@ -33,7 +33,7 @@ const Home = ({ producto }) => {
 
 export const getServerSideProps = async () => {
 
-  const info = await axios.get("http://localhost:3000/api/productos")
+  const info = await axios.get("https://lista-productos.vercel.app/api/productos")
 
 
   return { props: { producto: info.data } }
