@@ -12,7 +12,7 @@ export default async function datos(req, res) {
             const [datos] = await pool.query("INSERT INTO productos SET ?", infoReq)
             return res.status(200).json(datos)
         
-        case "PUT":
+      
             
     }
 

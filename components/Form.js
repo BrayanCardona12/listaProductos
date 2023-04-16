@@ -41,7 +41,7 @@ function Form() {
             await axios.put(`/api/productos/${router.query.id}`, producto)
             router.push('/')
         } else {
-            await axios.post("http://localhost:3000/api/productos", producto)
+            await axios.post("https://lista-productos.vercel.app/api/productos", producto)
             router.push('/')
         }
 
