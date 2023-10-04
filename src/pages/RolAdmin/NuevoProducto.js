@@ -2,15 +2,15 @@ import Container from 'components/Container'
 import Form from 'components/Form'
 import React from 'react'
 
-function nuevoProducto() {
+function NuevoProducto() {
   return (
     <>
     <Container>
         <Form/>
-        </Container>
+    </Container>
     
     </>
   )
 }
 
-export default nuevoProducto
+export default NuevoProducto

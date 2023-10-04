@@ -1,4 +1,4 @@
-import nuevoProducto from '@/pages/nuevoProducto'
+import nuevoProducto from '@/pages/RolAdmin/NuevoProducto'
 import React from 'react'
 
 function actulizar() {

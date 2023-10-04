@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import Container from 'components/Container';
 import BtnFloating from 'components/btnFloating';
@@ -43,7 +42,7 @@ function productoInfo({ data }) {
 
 
 export const getServerSideProps = async (ctx) => {
-    const { data } = await axios.get(`https://lista-productos.vercel.app/api/productos/${ctx.query.id}`)
+    const { data } = await axios.get(`http://localhost:3000/api/productos/${ctx.query.id}`)
 
     return {
         props: { data }

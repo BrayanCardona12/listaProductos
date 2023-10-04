@@ -1,142 +1,310 @@
 import axios from "axios";
-import Container from "components/Container"
-import Link from "next/link";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { StylesHome } from "public/scripts/StylesHome";
 import { useEffect, useState } from "react";
 
-const Home = ({ producto }) => {
+const Home = () => {
 
-  let [wordUser, setWordUser] = useState("")
-  let [condicion, setCondicion] = useState(false)
-  let [result, setResult] = useState({
-    id: 0,
+  const router = useRouter()
+  const [campo, setCampo] = useState({
     nombre: "",
-    descripcion: "",
-    precio: 0,
-    img: ""
+    pass: "",
+    tipo: "usuario"
   })
 
+  const [textError, setTextError] = useState("")
 
+  function change({ target: { name, value } }) {
 
+    setCampo({ ...campo, [name]: value })
+
+  }
+
+  async function enviar(e) {
+    e.preventDefault()
+    let {data} = await axios.post("http://localhost:3000/api/auth/f", campo)
+    if (data == '') {
+      setTextError("Errorrrr")
+    } else {
+      localStorage.setItem("auth", "true")
+      localStorage.setItem("nombreUsuario", campo.nombre.toString())
+      router.push("/RolAdmin")
+    }
+  }
 
   useEffect(() => {
-    const algo = producto.filter((element) => element.nombre.toUpperCase() == wordUser.toUpperCase())
+    let closer = document.querySelector('#closer');
 
-
-
-    if (algo.length != 0 && wordUser != "") {
-      let [inf] = algo
-      setResult({ ...result, ...inf })
-      setCondicion(condicion = true)
-      console.log();
-
-    } else {
-      setCondicion(condicion = false)
+    closer.onclick = () => {
+      closer.style.display = 'none';
+      navbar.classList.remove('active');
+      cart.classList.remove('active');
+      loginForm.classList.remove('active');
     }
 
 
-  }, [wordUser])
+    let navbar = document.querySelector('.navbar');
 
-  function search({ target }) {
-    setWordUser(target.value)
-    console.log(wordUser);
-  }
+    document.querySelector('#menu-btn').onclick = () => {
+      closer.style.display = 'block';
+      navbar.classList.toggle('active');
+    }
 
-  if (condicion) {
+    let cart = document.querySelector('.shopping-cart');
 
-    return <>
-      <Container>
-        <div className="w-100 bg-danger px-4 py-2 bg-opacity-75 d-flex justify-content-between ">
-          <i className="bi bi-person-circle fs-1" />
-          <h1 className="text-center  ">Lista de Productos</h1>
-          <Link href="/nuevoProducto"><i className="bi bi-plus-circle-fill fs-1" /></Link>
+    document.querySelector('#cart-btn').onclick = () => {
+      closer.style.display = 'block';
+      cart.classList.toggle('active');
+    }
+
+    let loginForm = document.querySelector('.login-form');
+
+    document.querySelector('#login-btn').onclick = () => {
+      closer.style.display = 'block';
+      loginForm.classList.toggle('active');
+    }
+
+    let searchForm = document.querySelector('.header .search-form');
+
+    document.querySelector('#search-btn').onclick = () => {
+      searchForm.classList.toggle('active');
+    }
+
+    window.onscroll = () => {
+      searchForm.classList.remove('active');
+    }
+
+    let slides = document.querySelectorAll('.home .slides-container .slide');
+    let index = 0;
+
+    function next() {
+      slides[index].classList.remove('actives');
+      index = (index + 1) % slides.length;
+      slides[index].classList.add('actives');
+    }
+
+    function prev() {
+      slides[index].classList.remove('actives');
+      index = (index - 1 + slides.length) % slides.length;
+      slides[index].classList.add('actives');
+    }
+
+    document.getElementById("slide-next").addEventListener("click", next);
+    document.getElementById("slide-prev").addEventListener("click", prev);
+
+  }, []);
+
+  return <>
+    <Head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      <link hrefLang="https://fonts.googleapis.com" />
+      <link hrefLang="https://fonts.gstatic.com" crossorigin />
+      <link hrefLang="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" hrefLang="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css/"
+      />
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    </Head>
+
+    <div>
+      <style jsx>
+        {`${StylesHome()}`}
+      </style>
+
+
+
+      <header className="header">
+        <a href="/" className="logo"> <i className="fa-solid fa-store"></i> Yanbal</a>
+
+        <form action="" className="search-form form">
+          <input className="input" type="search" placeholder="Buscar aqui..." id="search-box" />
+          <label htmlFor="search-box" className="fas fa-search label"></label>
+        </form>
+
+        <div className="icons">
+          <div id="menu-btn" className="fas fa-bars"></div>
+          <div id="search-btn" className="fas fa-search"></div>
+          <div id="cart-btn" className="fas fa-shopping-cart"></div>
+          <div id="login-btn" className="fas fa-user"></div>
+        </div>
+      </header>
+
+
+
+      <div id="closer" className="fas fa-times"></div>
+
+
+      <nav className="navbar">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="about.html">Nosotros</a>
+        <a href="team.html">Equipo</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contacto</a>
+      </nav>
+
+
+      <div className="shopping-cart">
+
+        <div className="box">
+          <i className="fas fa-times"></i>
+          <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+          <div className="content">
+            <h3 className="h3">Perfume Roxan</h3>
+            <span className="quantify"> 1 </span>
+            <span className="multiply"> x </span>
+            <span className="price"> $ </span>
+          </div>
         </div>
 
-        <div className="w-10 px-4 py-3">
-          <input list="productosList" type="search" onChange={search} className="form-control" />
-          <datalist id="productosList">
-          {producto.map((x) => 
-                <option value={x.nombre}></option>
-              )}
-
-          </datalist>
+        <div className="box">
+          <i className="fas fa-times"></i>
+          <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+          <div className="content">
+            <h3 className="h3">Perfume Roxan</h3>
+            <span className="quantify"> 1 </span>
+            <span className="multiply"> x </span>
+            <span className="price"> $ </span>
+          </div>
         </div>
 
-        <div className="mw-100 min-vh-100 d-flex flex-wrap justify-content-center">
+        <div className="box">
+          <i className="fas fa-times"></i>
+          <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+          <div className="content">
+            <h3 className="h3">Perfume Roxan</h3>
+            <span className="quantify"> 1 </span>
+            <span className="multiply"> x </span>
+            <span className="price"> $ </span>
+          </div>
+        </div>
+
+        <h3 className="total h3">total: <span>$560.00</span></h3>
+        <a href="/RolAdmin" className="btn">Comprar</a>
+      </div>
+
+
+      <div className="login-form">
+        <form className="form" onSubmit={enviar}>
+          <h3 className="h3">Iniciar Sesión</h3>
+          <input onChange={change} name="nombre" type="text" placeholder="Ingrese su correo" className="box input" />
+          <input onChange={change} name="pass" type="password" placeholder="Ingrese su contraseña" className="box input" />
+          <select name="tipo" onChange={change} className='box input' id="tipo">
+            <option value="usuario">Usuario</option>
+            <option value="vendedor">Vendedor</option>
+          </select>
+          <b style={{color:"red", fontSize:"15px"}}>{textError}</b>
+          <div className="remember">
+            <input className="remember-input input" type="checkbox" name="" id="remember-me" />
+            
+            <label className="label" htmlFor="remember-me">Recordarme</label>
+          </div>
+          <input type="submit" value="login now" className="btn btn-margin input" />
+          <p className="forget">Olvidate la contraseña <a href="#">Click Aqui</a></p>
+          <p className="forget">No tienes una cuenta <a href="/RolAdmin/RegisterAdmin">Crear Una</a></p>
+        </form>
+
+
+      </div>
 
 
 
-          <div className="card bg-dark bg-opacity-10 m-3" style={{ maxWidth: "300px", maxHeight: "550px" }}>
-            <Link className="w-100 text-center h-50" href={`/productsPages/${result.id}`}><img src={result.img} style={{ objectFit: "cover" }} alt="imagen del producto" className="card-img-top rounded h-100" /></Link>
-            <div className="card-body">
-              <p className="text-center h3">{result.nombre}</p>
-              <p style={{ textAlign: "justify" }} className="card-text" >{result.descripcion}</p>
-              <p className="btn btn-success d-block">${result.precio}</p>
+      <section className="home">
+        <div className="slides-container">
+
+          <div className="slide actives">
+            <div className="contenido">
+              <span>New Arrivals</span>
+              <h3 className="h3">Flexible chair</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Repellat earum quidem excepturi quae
+                maiores quas numquam.
+              </p>
+              <a href="/RolAdmin" className="btn">Comprar Ahora</a>
+            </div>
+            <div className="image">
+              <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+            </div>
+          </div>
+
+          <div className="slide">
+            <div className="contenido">
+              <span>New Arrivals</span>
+              <h3 className="h3">Flexible chair</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Repellat earum quidem excepturi quae
+                maiores quas numquam.
+              </p>
+              <a href="/RolAdmin" className="btn">Comprar Ahora</a>
+            </div>
+            <div className="image">
+              <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/007.png" />
+            </div>
+          </div>
+
+          <div className="slide">
+            <div className="contenido ">
+              <span>New Arrivals</span>
+              <h3 className="h3">Flexible chair</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Repellat earum quidem excepturi quae
+                maiores quas numquam.
+              </p>
+              <a href="/RolAdmin" className="btn btn-shopin">Comprar Ahora</a>
+            </div>
+            <div className="image">
+              <img src="https://i.pinimg.com/550x/34/9e/2a/349e2a4d065dcc55a417ac6f0528a5cf.jpg" />
             </div>
           </div>
 
         </div>
-      </Container>
+
+        <div id="slide-next" className="fas fa-angle-right"></div>
+        <div id="slide-prev" className="fas fa-angle-left"></div>
+
+      </section>
 
 
-    </>
-  } else {
-
-    return (
-      <>
-        <Container>
-          <div className="w-100 bg-danger px-4 py-2 bg-opacity-75 d-flex justify-content-between ">
-            <i className="bi bi-person-circle fs-1" />
-            <h1 className="text-center  ">Lista de Productos</h1>
-            <Link href="/nuevoProducto"><i className="bi bi-plus-circle-fill fs-1" /></Link>
+      <section className="contenedor">
+        <h2 className="title">Ofertas</h2>
+        <div className="banner-container">
+          <div className="banner">
+            <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+            <div className="banner-content">
+              <span>oferta limitada</span>
+              <h3 className="h3">upto 50% off</h3>
+              <a href="/RolAdmin" className="btn">Comprar</a>
+            </div>
           </div>
 
-          <div className="w-10 px-4 py-3">
-            <input list="productosList" type="search" onChange={search} className="form-control" />
-            <datalist style={{backgroundColor: "black"}} id="productosList">
-              {producto.map((x) => 
-                <option aria-label="550px" value={x.nombre} label={`$${x.precio}`}/>
-              )}
-
-            </datalist>
+          <div className="banner">
+            <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+            <div className="banner-content">
+              <span>oferta limitada</span>
+              <h3 className="h3">upto 50% off</h3>
+              <a href="/RolAdmin" className="btn">Comprar</a>
+            </div>
           </div>
 
-
-
-          <div className="mw-100 min-vh-100 d-flex flex-wrap justify-content-center">
-            {producto.map((x) =>
-              <div className="card bg-dark bg-opacity-10 m-3" style={{ maxWidth: "300px", maxHeight: "550px" }} key={x.id}>
-                <Link className="w-100 text-center h-50" href={`/productsPages/${x.id}`}><img src={x.img} style={{ objectFit: "cover" }} alt="imagen del producto" className="card-img-top rounded h-100" /></Link>
-                <div className="card-body">
-                  <p className="text-center h3">{x.nombre}</p>
-                  <p style={{ textAlign: "justify" }} className="card-text" >{x.descripcion}</p>
-                  <p className="btn btn-success d-block">${x.precio}</p>
-                </div>
-              </div>
-            )}
+          <div className="banner">
+            <img src="https://img.freepik.com/free-photo/bottle-perfume-with-word-perfume-it_1340-37484.jpg" />
+            <div className="banner-content">
+              <span>oferta limitada</span>
+              <h3 className="h3">upto 50% off</h3>
+              <a href="/RolAdmin" className="btn">Comprar</a>
+            </div>
           </div>
-
-        </Container>
-      </>
-    )
-
-  }
+        </div>
+      </section>
 
 
+    </div>
 
 
-
-
-
-
+  </>
 }
-
-export const getServerSideProps = async () => {
-
-  const info = await axios.get("https://lista-productos.vercel.app/api/productos")
-
-
-  return { props: { producto: info.data } }
-}
-
 
 export default Home
